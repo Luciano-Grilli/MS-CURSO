@@ -10,19 +10,20 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
+import com.formaciondbi.microservicios.generics.examenes.Examen;
 import com.formaciondbi.microservicios.generics.models.entity.Alumno;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @AllArgsConstructor
 @Getter
-@Setter
+
 @Entity
 @Table(name="cursos")
 public class Cursos {
@@ -37,12 +38,16 @@ public class Cursos {
 	
 	@OneToMany(fetch= FetchType.LAZY)
 	private List<Alumno> alumno;
+	
+	@ManyToMany(fetch = FetchType.LAZY)
+	private List<Examen> examenes;
 
 	private Date createAt;
 	
 	
 	public Cursos() {
 		this.alumno = new ArrayList<>();
+		this.examenes = new ArrayList<>();
 	}
 
 	@PrePersist
@@ -58,6 +63,18 @@ public class Cursos {
 		this.alumno.remove(alumno);
 	}
 	
+	public void addExamen(Examen examen) {
+		this.examenes.add(examen);
+	}
+	
+	public void removeExamen(Examen examen) {
+		this.examenes.remove(examen);
+	}
+	
+	
+	
+	
+	
 	public boolean equals(Object obj) {
 		if(this == obj) {
 			return true;
@@ -71,6 +88,22 @@ public class Cursos {
 		Alumno a = new Alumno();
 		
 		return this.id != null && this.id.equals(a.getId());
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public void setAlumno(List<Alumno> alumno) {
+		this.alumno = alumno;
+	}
+
+	public void setExamenes(List<Examen> examenes) {
+		this.examenes = examenes;
 	}
 	
 	

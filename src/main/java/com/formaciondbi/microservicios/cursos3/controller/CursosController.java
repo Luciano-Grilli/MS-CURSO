@@ -2,6 +2,7 @@ package com.formaciondbi.microservicios.cursos3.controller;
 
 import com.formaciondbi.microservicios.cursos3.entity.Cursos;
 import com.formaciondbi.microservicios.cursos3.services.CursosServiceImpl;
+import com.formaciondbi.microservicios.generics.examenes.Examen;
 import com.formaciondbi.microservicios.generics.models.entity.Alumno;
 
 import java.util.List;
@@ -55,6 +56,43 @@ public class CursosController extends BaseControllerImpl<Cursos, CursosServiceIm
 	public ResponseEntity<?> buscarPorAlumnoId(@PathVariable Long id){
 		Cursos curso = servicio.findCursoByAlumnoId(id);
 		return ResponseEntity.ok(curso);
+	}
+	
+	
+	@PutMapping("/{id}/asignar-examenes")
+	public ResponseEntity<?> asignarExamenes(@PathVariable Long id,@RequestBody List<Examen> examenes) throws Exception{
+		Cursos op;
+			try {
+				op = this.servicio.findById(id);
+				
+			} catch (Exception e) {
+				
+				return ResponseEntity.notFound().build();
+			}	
+
+			Cursos dbCurso = op;
+			examenes.forEach(e ->{
+				dbCurso.addExamen(e);
+			});
+			
+			return ResponseEntity.status(HttpStatus.CREATED).body(this.servicio.save(dbCurso));
+			
+			
+	}
+	
+	@PutMapping("/{id}/eliminar-examen")
+	public ResponseEntity<?> eliminarExamen(@PathVariable Long id, @RequestBody Examen examen) throws Exception{
+			Cursos op;
+			try {
+				op = this.servicio.findById(id);
+			} catch (Exception e) {
+				
+				return ResponseEntity.notFound().build();
+			}	
+
+			Cursos dbCurso = op;
+			dbCurso.removeExamen(examen);
+			return ResponseEntity.status(HttpStatus.CREATED).body(this.servicio.save(dbCurso));
 	}
 	
 }
