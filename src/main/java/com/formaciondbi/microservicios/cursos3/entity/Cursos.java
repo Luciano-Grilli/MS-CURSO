@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
 import com.formaciondbi.microservicios.generics.examenes.Examen;
 import com.formaciondbi.microservicios.generics.models.entity.Alumno;
@@ -34,6 +35,7 @@ public class Cursos {
     private Long id;
 	
 	@Column(name = "nombre")
+	@NotEmpty
     private String nombre;
 	
 	@OneToMany(fetch= FetchType.LAZY)
