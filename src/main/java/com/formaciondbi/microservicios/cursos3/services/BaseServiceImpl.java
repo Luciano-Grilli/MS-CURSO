@@ -18,7 +18,7 @@ public abstract class BaseServiceImpl<E , ID extends Serializable> implements Ba
     @Transactional
     public List<E> findAll() throws Exception {
         try{
-            List<E> entities = baseRepository.findAll();
+            List<E> entities = (List<E>) baseRepository.findAll();
             return entities;
         }catch (Exception e) {
             throw new Exception(e.getMessage());
