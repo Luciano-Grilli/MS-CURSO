@@ -6,6 +6,8 @@ import com.formaciondbi.microservicios.generics.examenes.Examen;
 import com.formaciondbi.microservicios.generics.models.entity.Alumno;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +57,18 @@ public class CursosController extends BaseControllerImpl<Cursos, CursosServiceIm
 	@GetMapping("/alumno/{id}")
 	public ResponseEntity<?> buscarPorAlumnoId(@PathVariable Long id){
 		Cursos curso = servicio.findCursoByAlumnoId(id);
+		
+		if (curso != null) {
+			List<Long> examenesId = (List<Long>) servicio.examenesIdsRespondidosPorAlumno(id);
+			
+			List<Examen> examenes = curso.getExamenes().stream().map(examen -> {
+				if (examenesId.contains(examen.getId())) {
+					examen.setRespondido(true);
+				}
+				return examen;
+			}).collect(Collectors.toList());
+			curso.setExamenes(examenes);
+		}
 		return ResponseEntity.ok(curso);
 	}
 	
