@@ -23,7 +23,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-@Getter
 
 @Entity
 @Table(name="cursos")
@@ -31,7 +30,7 @@ public class Cursos {
 	
 	
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 	
 	@Column(name = "nombre")
@@ -106,6 +105,22 @@ public class Cursos {
 
 	public void setExamenes(List<Examen> examenes) {
 		this.examenes = examenes;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public List<Alumno> getAlumno() {
+		return alumno;
+	}
+
+	public List<Examen> getExamenes() {
+		return examenes;
 	}
 	
 	
