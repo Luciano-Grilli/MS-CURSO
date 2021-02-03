@@ -5,9 +5,12 @@ import com.formaciondbi.microservicios.cursos3.services.CursosServiceImpl;
 import com.formaciondbi.microservicios.generics.examenes.Examen;
 import com.formaciondbi.microservicios.generics.models.entity.Alumno;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +18,22 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class CursosController extends BaseControllerImpl<Cursos, CursosServiceImpl> {
  
+	@Value("${config.balanceador.test}")
+	private String balanceadorTest;
 	
-	
+	@GetMapping("/balanceador-test")
+	public ResponseEntity<?> balanceadorTest() {
+		Map<String, Object> response = new HashMap<String, Object>();
+		response.put("balanceador", balanceadorTest);
+		try {
+			response.put("cursos", servicio.findAll());
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body("no anda");
+		}
+		
+		return ResponseEntity.ok(response);
+	}
+
 	@PutMapping("/{id}/asignar-alumnos")
 	public ResponseEntity<?> asignarAlumnos(@PathVariable Long id,@RequestBody List<Alumno> alumnos) throws Exception{
 			Cursos op;
