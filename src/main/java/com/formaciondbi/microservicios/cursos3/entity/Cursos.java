@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,8 +15,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.formaciondbi.microservicios.generics.examenes.Examen;
 import com.formaciondbi.microservicios.generics.models.entity.Alumno;
 
@@ -37,7 +40,12 @@ public class Cursos {
 	@NotEmpty
     private String nombre;
 	
-	@OneToMany(fetch= FetchType.LAZY)
+	@JsonIgnoreProperties(value = {"curso"}, allowSetters = true)
+	@OneToMany(fetch= FetchType.LAZY, mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CursoAlumno> cursoAlumno;
+	
+	//@OneToMany(fetch= FetchType.LAZY)
+	@Transient
 	private List<Alumno> alumno;
 	
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -49,6 +57,7 @@ public class Cursos {
 	public Cursos() {
 		this.alumno = new ArrayList<>();
 		this.examenes = new ArrayList<>();
+		this.cursoAlumno = new ArrayList<>();
 	}
 
 	@PrePersist
@@ -122,6 +131,20 @@ public class Cursos {
 	public List<Examen> getExamenes() {
 		return examenes;
 	}
+
+	public List<CursoAlumno> getCursoAlumno() {
+		return cursoAlumno;
+	}
+
+	public void setCursoAlumno(List<CursoAlumno> cursoAlumno) {
+		this.cursoAlumno = cursoAlumno;
+	}
 	
+	public void addCursoAlumno(CursoAlumno cursoAlumno) {
+		this.cursoAlumno.add(cursoAlumno);
+	}
 	
+	public void removeCursoAlumno(CursoAlumno cursoAlumno) {
+		this.cursoAlumno.remove(cursoAlumno);
+	}
 }

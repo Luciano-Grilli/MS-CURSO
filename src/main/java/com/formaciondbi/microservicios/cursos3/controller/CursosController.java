@@ -1,5 +1,6 @@
 package com.formaciondbi.microservicios.cursos3.controller;
 
+import com.formaciondbi.microservicios.cursos3.entity.CursoAlumno;
 import com.formaciondbi.microservicios.cursos3.entity.Cursos;
 import com.formaciondbi.microservicios.cursos3.services.CursosServiceImpl;
 import com.formaciondbi.microservicios.generics.examenes.Examen;
@@ -11,6 +12,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +36,69 @@ public class CursosController extends BaseControllerImpl<Cursos, CursosServiceIm
 		
 		return ResponseEntity.ok(response);
 	}
+	
+	@Override
+	@RequestMapping("/{id}")
+    public ResponseEntity<?> getOne(@PathVariable Long id){
+        try {
+        	Cursos curso = servicio.findById(id);
+        	
+        	if (curso.getCursoAlumno().isEmpty() == false) {
+				List <Long> ids = curso.getCursoAlumno().stream().map(ca ->{
+					return ca.getAlumnoId();
+				}).collect(Collectors.toList());
+				
+				List<Alumno> alumnos = (List<Alumno>) servicio.obtenerAlumnosPorCurso(ids);
+				curso.setAlumno(alumnos);
+						
+			}
+        	
+            return ResponseEntity.status(HttpStatus.OK).body(curso);
+
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\":\"error por favor intente mas tarde.\"}");
+        }
+    }
+	
+	@Override
+	@GetMapping("")
+    public ResponseEntity<?> getAll(){
+        try {
+        	//obtener list cursos -> c/u get list cursosAlumnos -> c/cur crear alumno
+        	//y set alumno id de curA y agregar el alumno al curso
+        	List<Cursos> cursos =servicio.findAll().stream().map(c -> {
+        		c.getCursoAlumno().forEach(ca ->{
+        			Alumno alumno = new Alumno();
+        			alumno.setId(ca.getAlumnoId());
+        			c.addAlumno(alumno);
+        		});
+        		return c;
+        	}).collect(Collectors.toList());
+        	
+            return ResponseEntity.status(HttpStatus.OK).body(cursos);
+
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\":\"error por favor intente mas tarde.\"}");
+        }
+    }
+	
+	@GetMapping("/paged")
+    public ResponseEntity<?> getAll(Pageable pageable){
+        try {
+        	Page<Cursos> cursos = servicio.findAll(pageable).map(curso ->{
+        		curso.getCursoAlumno().forEach(ca ->{
+        			Alumno alumno = new Alumno();
+        			alumno.setId(ca.getAlumnoId());
+        			curso.addAlumno(alumno);
+        		});
+        		return curso;
+        	});
+            return ResponseEntity.status(HttpStatus.OK).body(cursos);
+
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\":\"error por favor intente mas tarde.\"}");
+        }
+    }
 
 	@PutMapping("/{id}/asignar-alumnos")
 	public ResponseEntity<?> asignarAlumnos(@PathVariable Long id,@RequestBody List<Alumno> alumnos) throws Exception{
@@ -47,7 +113,11 @@ public class CursosController extends BaseControllerImpl<Cursos, CursosServiceIm
 
 			Cursos dbCurso = op;
 			alumnos.forEach(a ->{
-				dbCurso.addAlumno(a);
+				
+				CursoAlumno cursoAlumno = new CursoAlumno();
+				cursoAlumno.setAlumnoId(a.getId());
+				cursoAlumno.setCurso(dbCurso);
+				dbCurso.addCursoAlumno(cursoAlumno);
 			});
 			
 			return ResponseEntity.status(HttpStatus.CREATED).body(this.servicio.save(dbCurso));
@@ -66,7 +136,9 @@ public class CursosController extends BaseControllerImpl<Cursos, CursosServiceIm
 			}	
 
 			Cursos dbCurso = op;
-			dbCurso.removeAlumno(alumno);
+			CursoAlumno cursoAlumno = new CursoAlumno();
+			cursoAlumno.setAlumnoId(alumno.getId());
+			dbCurso.removeCursoAlumno(cursoAlumno);
 			return ResponseEntity.status(HttpStatus.CREATED).body(this.servicio.save(dbCurso));
 	}
 	
@@ -126,4 +198,9 @@ public class CursosController extends BaseControllerImpl<Cursos, CursosServiceIm
 			return ResponseEntity.status(HttpStatus.CREATED).body(this.servicio.save(dbCurso));
 	}
 	
+	@DeleteMapping("/eliminar-alumno/{id}")
+	public ResponseEntity<?> eliminarCursoAlumnoPorId(@PathVariable Long id){
+		this.servicio.eliminarCursoAlumnoPorId(id);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
 }
