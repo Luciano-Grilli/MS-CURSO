@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.formaciondbi.microservicios.cursos3.clients.AlumnoFeingClient;
-import com.formaciondbi.microservicios.cursos3.clients.RespuestaFeingClient;
+import com.formaciondbi.microservicios.cursos3.clients.RespuestaFeignClient;
 import com.formaciondbi.microservicios.cursos3.entity.Cursos;
 import com.formaciondbi.microservicios.cursos3.repository.BaseRepository;
 import com.formaciondbi.microservicios.cursos3.repository.CursosRepository;
@@ -23,7 +23,7 @@ public class CursosServiceImpl extends BaseServiceImpl<Cursos,Long> implements C
     private CursosRepository cursoRepository;
 	
 	@Autowired
-	private RespuestaFeingClient client;
+	private RespuestaFeignClient client;
 	
 	@Autowired
 	private AlumnoFeingClient clientAlumno;
