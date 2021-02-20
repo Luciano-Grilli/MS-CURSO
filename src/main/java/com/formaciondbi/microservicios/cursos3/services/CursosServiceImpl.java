@@ -15,61 +15,52 @@ import com.formaciondbi.microservicios.cursos3.repository.BaseRepository;
 import com.formaciondbi.microservicios.cursos3.repository.CursosRepository;
 import com.formaciondbi.microservicios.generics.models.entity.Alumno;
 
-
 @Service
-public class CursosServiceImpl extends BaseServiceImpl<Cursos,Long> implements CursosService {
+public class CursosServiceImpl extends BaseServiceImpl<Cursos, Long> implements CursosService {
 
 	@Autowired
-    private CursosRepository cursoRepository;
-	
+	private CursosRepository cursoRepository;
+
 	@Autowired
 	private RespuestaFeignClient client;
-	
+
 	@Autowired
 	private AlumnoFeingClient clientAlumno;
-	
-	public CursosServiceImpl(BaseRepository<Cursos,Long> baseRepository){
-        super(baseRepository);
-    }
 
-	
+	public CursosServiceImpl(BaseRepository<Cursos, Long> baseRepository) {
+		super(baseRepository);
+	}
+
 	@Override
 	@Transactional(readOnly = true)
 	public Cursos findCursoByAlumnoId(Long id) {
-		
+
 		return cursoRepository.findCursoByAlumnoId(id);
 	}
 
-
 	@Override
 	public Iterable<Long> examenesIdsRespondidosPorAlumno(Long alumnoId) {
-		
+
 		return client.examenesIdsRespondidosPorAlumno(alumnoId);
 	}
-
 
 	@Override
 	public Iterable<Alumno> obtenerAlumnosPorCurso(List<Long> ids) {
 		return clientAlumno.obtenerAlumnosPorCurso(ids);
 	}
 
-
 	@Override
 	@Transactional(readOnly = true)
 	public Page<Cursos> findAll(Pageable pageable) throws Exception {
-		
+
 		return cursoRepository.findAll(pageable);
 	}
-
 
 	@Override
 	@Transactional
 	public void eliminarCursoAlumnoPorId(Long id) {
 		cursoRepository.eliminarCursoAlumnoPorId(id);
-		
+
 	}
-
-	
-
 
 }

@@ -9,58 +9,61 @@ import com.formaciondbi.microservicios.cursos3.services.BaseServiceImpl;
 
 public abstract class BaseControllerImpl<E, S extends BaseServiceImpl<E, Long>> implements BaseController<E, Long> {
 
-    @Autowired
-    protected S servicio;
+	@Autowired
+	protected S servicio;
 
+	@GetMapping("")
+	public ResponseEntity<?> getAll() {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(servicio.findAll());
 
-    @GetMapping("")
-    public ResponseEntity<?> getAll(){
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.findAll());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body("{\"error\":\"error por favor intente mas tarde.\"}");
+		}
+	}
 
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\":\"error por favor intente mas tarde.\"}");
-        }
-    }
+	@RequestMapping("/{id}")
+	public ResponseEntity<?> getOne(@PathVariable Long id) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(servicio.findById(id));
 
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+					.body("{\"error\":\"error por favor intente mas tarde.\"}");
+		}
+	}
 
-    @RequestMapping("/{id}")
-    public ResponseEntity<?> getOne(@PathVariable Long id){
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.findById(id));
+	@PostMapping("")
+	public ResponseEntity<?> save(@RequestBody E entity) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(servicio.save(entity));
 
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\":\"error por favor intente mas tarde.\"}");
-        }
-    }
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body("{\"error\":\"error por favor intente mas tarde.\"}");
+		}
+	}
 
-    @PostMapping("")
-    public ResponseEntity<?> save(@RequestBody E entity){
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.save(entity));
+	@PutMapping("/{id}")
+	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody E entity) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(servicio.update(id, entity));
 
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"error por favor intente mas tarde.\"}");
-        }
-    }
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body("{\"error\":\"error por favor intente mas tarde.\"}");
+		}
+	}
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id,@RequestBody E entity){
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(servicio.update(id,entity));
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> delete(@PathVariable Long id) {
+		try {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(servicio.delete(id));
 
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"error por favor intente mas tarde.\"}");
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
-        try {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(servicio.delete(id));
-
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"error por favor intente mas tarde.\"}");
-        }
-    }
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body("{\"error\":\"error por favor intente mas tarde.\"}");
+		}
+	}
 }

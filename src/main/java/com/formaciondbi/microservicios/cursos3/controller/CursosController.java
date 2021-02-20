@@ -145,7 +145,6 @@ public class CursosController extends BaseControllerImpl<Cursos, CursosServiceIm
 		return ResponseEntity.status(HttpStatus.CREATED).body(this.servicio.save(dbCurso));
 	}
 
-	
 	@GetMapping("/alumno/{id}")
 	public ResponseEntity<?> buscarPorAlumnoId(@PathVariable Long id) {
 		Cursos curso = servicio.findCursoByAlumnoId(id);

@@ -20,17 +20,17 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CursoAlumno {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name="alumno_id", unique = true)
+	@Column(name = "alumno_id", unique = true)
 	private Long alumnoId;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="curso_id")
-	@JsonIgnoreProperties(value={"cursoAlumno"})
+	@JoinColumn(name = "curso_id")
+	@JsonIgnoreProperties(value = { "cursoAlumno" })
 	private Cursos curso;
 
 	@Override
@@ -38,14 +38,13 @@ public class CursoAlumno {
 		if (this == obj) {
 			return true;
 		}
-		
+
 		if (!(obj instanceof CursoAlumno)) {
 			return false;
 		}
-		
+
 		CursoAlumno a = (CursoAlumno) obj;
 		return this.alumnoId != null && this.alumnoId.equals(a.getAlumnoId());
 	}
-	
-	
+
 }

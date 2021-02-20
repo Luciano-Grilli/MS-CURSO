@@ -1,5 +1,6 @@
 
 package com.formaciondbi.microservicios.cursos3.entity;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,32 +29,30 @@ import lombok.Getter;
 @AllArgsConstructor
 
 @Entity
-@Table(name="cursos")
+@Table(name = "cursos")
 public class Cursos {
-	
-	
+
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-	
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
 	@Column(name = "nombre")
 	@NotEmpty
-    private String nombre;
-	
-	@JsonIgnoreProperties(value = {"curso"}, allowSetters = true)
-	@OneToMany(fetch= FetchType.LAZY, mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
+	private String nombre;
+
+	@JsonIgnoreProperties(value = { "curso" }, allowSetters = true)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CursoAlumno> cursoAlumno;
-	
-	//@OneToMany(fetch= FetchType.LAZY)
+
+	// @OneToMany(fetch= FetchType.LAZY)
 	@Transient
 	private List<Alumno> alumno;
-	
+
 	@ManyToMany(fetch = FetchType.LAZY)
 	private List<Examen> examenes;
 
 	private Date createAt;
-	
-	
+
 	public Cursos() {
 		this.alumno = new ArrayList<>();
 		this.examenes = new ArrayList<>();
@@ -64,39 +63,35 @@ public class Cursos {
 	public void prePersist() {
 		this.createAt = new Date();
 	}
-	
+
 	public void addAlumno(Alumno alumno) {
 		this.alumno.add(alumno);
 	}
-	
+
 	public void removeAlumno(Alumno alumno) {
 		this.alumno.remove(alumno);
 	}
-	
+
 	public void addExamen(Examen examen) {
 		this.examenes.add(examen);
 	}
-	
+
 	public void removeExamen(Examen examen) {
 		this.examenes.remove(examen);
 	}
-	
-	
-	
-	
-	
+
 	public boolean equals(Object obj) {
-		if(this == obj) {
+		if (this == obj) {
 			return true;
 		}
-		
+
 		if (!(obj instanceof Alumno)) {
 			return false;
-			
+
 		}
-		
+
 		Alumno a = new Alumno();
-		
+
 		return this.id != null && this.id.equals(a.getId());
 	}
 
@@ -139,11 +134,11 @@ public class Cursos {
 	public void setCursoAlumno(List<CursoAlumno> cursoAlumno) {
 		this.cursoAlumno = cursoAlumno;
 	}
-	
+
 	public void addCursoAlumno(CursoAlumno cursoAlumno) {
 		this.cursoAlumno.add(cursoAlumno);
 	}
-	
+
 	public void removeCursoAlumno(CursoAlumno cursoAlumno) {
 		this.cursoAlumno.remove(cursoAlumno);
 	}
