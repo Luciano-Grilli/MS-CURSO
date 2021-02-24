@@ -9,10 +9,10 @@
 		<version>2.4.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.formaciondbi.microservicios.cursos3</groupId>
-	<artifactId>microservicios-cursos3</artifactId>
+	<groupId>com.formaciondbi.microservicios.cursos</groupId>
+	<artifactId>microservicios-cursos</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>microservicios-cursos3</name>
+	<name>microservicios-cursos</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
