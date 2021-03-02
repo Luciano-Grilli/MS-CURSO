@@ -1,22 +1,20 @@
 package com.formaciondbi.microservicios.cursos3.services;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.formaciondbi.microservicios.cursos3.clients.AlumnoFeingClient;
 import com.formaciondbi.microservicios.cursos3.clients.RespuestaFeignClient;
 import com.formaciondbi.microservicios.cursos3.entity.Cursos;
-import com.formaciondbi.microservicios.cursos3.repository.BaseRepository;
 import com.formaciondbi.microservicios.cursos3.repository.CursosRepository;
 import com.formaciondbi.microservicios.generics.models.entity.Alumno;
+import com.formaciondbi.microservicios.generics.services.ServicesImpl;
 
 @Service
-public class CursosServiceImpl extends BaseServiceImpl<Cursos, Long> implements CursosService {
+public class CursosServiceImpl extends ServicesImpl<Cursos, Long> implements CursosService {
 
 	@Autowired
 	private CursosRepository cursoRepository;
@@ -27,9 +25,11 @@ public class CursosServiceImpl extends BaseServiceImpl<Cursos, Long> implements 
 	@Autowired
 	private AlumnoFeingClient clientAlumno;
 
-	public CursosServiceImpl(BaseRepository<Cursos, Long> baseRepository) {
-		super(baseRepository);
+	/*
+	public CursosServiceImpl(BaseRepository<Cursos, Long> Repository) {
+		super(Repository);
 	}
+	*/
 
 	@Override
 	@Transactional(readOnly = true)

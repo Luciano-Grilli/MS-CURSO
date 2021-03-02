@@ -1,17 +1,20 @@
 package com.formaciondbi.microservicios.cursos3.controller;
 
-import com.formaciondbi.microservicios.cursos3.clients.RespuestaFeignClient;
 import com.formaciondbi.microservicios.cursos3.entity.CursoAlumno;
 import com.formaciondbi.microservicios.cursos3.entity.Cursos;
-import com.formaciondbi.microservicios.cursos3.services.CursosServiceImpl;
+import com.formaciondbi.microservicios.cursos3.services.CursosService;
+import com.formaciondbi.microservicios.generics.controllers.ControllerImpl;
 import com.formaciondbi.microservicios.generics.examenes.Examen;
 import com.formaciondbi.microservicios.generics.models.entity.Alumno;
+import com.formaciondbi.microservicios.generics.services.ServicesImpl;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,10 +23,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class CursosController extends BaseControllerImpl<Cursos, CursosServiceImpl> {
+public class CursosController extends ControllerImpl<Cursos, ServicesImpl<Cursos, Long>> {
 
 	@Value("${config.balanceador.test}")
 	private String balanceadorTest;
+	
+	@Autowired
+	private CursosService cursoService; 
 
 	@GetMapping("/balanceador-test")
 	public ResponseEntity<?> balanceadorTest() {
@@ -49,7 +55,7 @@ public class CursosController extends BaseControllerImpl<Cursos, CursosServiceIm
 					return ca.getAlumnoId();
 				}).collect(Collectors.toList());
 
-				List<Alumno> alumnos = (List<Alumno>) servicio.obtenerAlumnosPorCurso(ids);
+				List<Alumno> alumnos = (List<Alumno>) cursoService.obtenerAlumnosPorCurso(ids);
 				curso.setAlumno(alumnos);
 
 			}
@@ -68,7 +74,7 @@ public class CursosController extends BaseControllerImpl<Cursos, CursosServiceIm
 		try {
 			// obtener list cursos -> c/u get list cursosAlumnos -> c/cur crear alumno
 			// y set alumno id de curA y agregar el alumno al curso
-			List<Cursos> cursos = servicio.findAll().stream().map(c -> {
+			List<Cursos> cursos =  ((Collection<Cursos>) servicio.findAll()).stream().map(c -> {
 				c.getCursoAlumno().forEach(ca -> {
 					Alumno alumno = new Alumno();
 					alumno.setId(ca.getAlumnoId());
@@ -147,10 +153,10 @@ public class CursosController extends BaseControllerImpl<Cursos, CursosServiceIm
 
 	@GetMapping("/alumno/{id}")
 	public ResponseEntity<?> buscarPorAlumnoId(@PathVariable Long id) {
-		Cursos curso = servicio.findCursoByAlumnoId(id);
+		Cursos curso = cursoService.findCursoByAlumnoId(id);
 
 		if (curso != null) {
-			List<Long> examenesId = (List<Long>) servicio.examenesIdsRespondidosPorAlumno(id);
+			List<Long> examenesId = (List<Long>) cursoService.examenesIdsRespondidosPorAlumno(id);
 			if (examenesId != null && examenesId.size() > 0) {
 				List<Examen> examenes = curso.getExamenes().stream().map(examen -> {
 					if (examenesId.contains(examen.getId())) {
@@ -203,7 +209,19 @@ public class CursosController extends BaseControllerImpl<Cursos, CursosServiceIm
 
 	@DeleteMapping("/eliminar-alumno/{id}")
 	public ResponseEntity<?> eliminarCursoAlumnoPorId(@PathVariable Long id) {
-		this.servicio.eliminarCursoAlumnoPorId(id);
+		this.cursoService.eliminarCursoAlumnoPorId(id);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
+
+	@Override
+	public ResponseEntity<?> save(Cursos entity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<?> update(Long id, Cursos entity) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

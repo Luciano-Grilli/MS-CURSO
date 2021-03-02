@@ -24,8 +24,6 @@ import com.formaciondbi.microservicios.generics.examenes.Examen;
 import com.formaciondbi.microservicios.generics.models.entity.Alumno;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 @AllArgsConstructor
 
 @Entity
@@ -142,4 +140,13 @@ public class Cursos {
 	public void removeCursoAlumno(CursoAlumno cursoAlumno) {
 		this.cursoAlumno.remove(cursoAlumno);
 	}
+
+	public Date getCreateAt() {
+		return createAt;
+	}
+
+	public void setCreateAt(Date createAt) {
+		this.createAt = createAt;
+	}
+	
 }
