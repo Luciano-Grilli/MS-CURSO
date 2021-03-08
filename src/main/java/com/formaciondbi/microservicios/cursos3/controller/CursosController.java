@@ -213,15 +213,4 @@ public class CursosController extends ControllerImpl<Cursos, ServicesImpl<Cursos
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
-	@Override
-	public ResponseEntity<?> save(Cursos entity) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ResponseEntity<?> update(Long id, Cursos entity) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
